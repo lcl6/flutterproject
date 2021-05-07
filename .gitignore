@@ -1,10 +1,10 @@
 .DS_Store
-.dart_tool/
+
 
 .packages
 .pub/
 
-.idea/
+
 .vagrant/
 .sconsign.dblite
 .svn/

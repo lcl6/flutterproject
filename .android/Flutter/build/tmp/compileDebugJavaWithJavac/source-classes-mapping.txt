@@ -1,0 +1,10 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+io/flutter/facade/Flutter.java
+ io.flutter.facade.Flutter
+ io.flutter.facade.Flutter$1
+ io.flutter.facade.Flutter$2
+com/example/flutterdemo/BuildConfig.java
+ com.example.flutterdemo.BuildConfig
+io/flutter/facade/FlutterFragment.java
+ io.flutter.facade.FlutterFragment

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterdemo/page/ContentPage.dart';
 import 'package:flutterdemo/page/HomePage.dart';
 import 'package:flutterdemo/page/PersonPage.dart';
-
+import 'package:apifm/apifm.dart' as Apifm;
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -14,6 +14,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Apifm.init("tz");
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

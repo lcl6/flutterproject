@@ -1,18 +1,71 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:apifm/apifm.dart' as Apifm;
+import 'package:flutterdemo/bean/BannerBean.dart';
+import 'dart:convert' show json;
 
+import 'package:flutterdemo/bean/CategoryBean.dart';
 class HomePage extends StatefulWidget {
+  List<String> picList= new List();
+
+  List<CategoryBean> catelogList= new List();
   @override
   State<StatefulWidget> createState() {
-    return HomePageState();
+    var homePageState = HomePageState();
+
+     var banners = Apifm.banners({'type':'app'});
+     banners.then((res){
+       // print("日志信息"+res.toString());
+       List list = res['data'];
+       for (var value in list) {
+         var picUrl = value['picUrl'];
+         picList.add(picUrl);
+       }
+       // print("日志信息222"+picList.toString());
+       homePageState.setData(picList);
+     });
+
+
+     var goodsCategory = Apifm.goodsCategory();
+    goodsCategory.then((res){
+      List list = res['data'];
+      for (var value in list) {
+        print("日志信息222"+list.toString());
+        var categoryBean = CategoryBean();
+        categoryBean.url= value['icon'];
+        categoryBean.title= value['name'];
+        catelogList.add(categoryBean);
+
+      }
+      homePageState.setCatelog(catelogList);
+    });
+
+    return homePageState;
   }
 }
 
 class HomePageState extends State<HomePage> {
+  List<String> _picList;
+  List<CategoryBean> _catelogList;
+  HomePageState();
+
+
+  setData(List<String> list) {
+    setState(() {
+      this._picList=list;
+    });
+  }
+
+  void setCatelog(List<CategoryBean> catelogList) {
+   setState(() {
+     _catelogList=catelogList;
+   });
+  }
+
   @override
   Widget build(BuildContext context) {
-
+    print("日志信息"+_picList.toString());
     return Scaffold(
       body:SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -21,9 +74,13 @@ class HomePageState extends State<HomePage> {
             Container(
                 height: 150,
                 child: Swiper(
-                  itemCount: 3,
+                  itemCount:(_picList==null||_picList.length<=1)?1:_picList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Image.network("http://via.placeholder.com/350x150",
+                    if((_picList==null||_picList.length<=1)){
+                      return Image.network("https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3437217665,1564280326&fm=26&gp=0.jpg",
+                          fit: BoxFit.fitWidth);
+                    }
+                    return Image.network(_picList[index],
                         fit: BoxFit.fitWidth);
                   },
                   pagination: new SwiperPagination(),
@@ -65,7 +122,7 @@ class HomePageState extends State<HomePage> {
               spacing: 10,
               runSpacing: 10,
               alignment: WrapAlignment.center,
-              children: _getCatologItem(),),
+              children: _getCatologItem(_catelogList),),
             SizedBox(
               height: 10,
             ),
@@ -122,20 +179,29 @@ class HomePageState extends State<HomePage> {
   }
 
   ///目录项
-  List<Widget> _getCatologItem(){
+  List<Widget> _getCatologItem(List<CategoryBean> catelogList){
+    List<Widget> list = new List();
+    if(catelogList==null){
+      return list;
+    }
+    print("日志信息444"+catelogList.toString());
     var screnWidth = MediaQuery.of(context).size.width;
     var d = screnWidth-60;
     var devWidth = d/5;
-    List<Widget> list = new List();
-    for (int i = 0; i < 10; i++) {
+
+
+    for (var value in catelogList) {
       list.add(Column(children: <Widget>[
-        Image.network("http://via.placeholder.com/350x150",height: 80,width: devWidth,),
-        SizedBox(height: 5,),
-        Text("上装")
+        Image.network(value.url==''?"http://via.placeholder.com/350x150":value.url,height: 40,width: devWidth,),
+        SizedBox(height: 2,),
+        Text(value.title)
       ],));
+
     }
     return list;
   }
+
+
 
 
 }

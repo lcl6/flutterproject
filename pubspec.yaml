@@ -18,19 +18,23 @@ description: A new Flutter module.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
+  flutter_swiper: ^1.1.6
+
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_swiper: ^1.1.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -41,6 +45,16 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  ###引入图片资源
+  assets:
+    - assets/icons/one.png
+    - assets/icons/one_sel.png
+    - assets/icons/five.png
+    - assets/icons/five_sel.png
+    - assets/icons/tree.png
+    - assets/icons/tree_sel.png
+    - assets/images/notice.png
+    - assets/images/live.jpg
   # To add Flutter specific assets to your application, add an assets section, 
   # like this:
   # assets:

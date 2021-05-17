@@ -1,13 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutterdemo/page/ContentPage.dart';
+import 'package:flutterdemo/page/HomePage.dart';
+import 'package:flutterdemo/page/PersonPage.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   MyApp();
-  // This widget is the root of your application.
 
+  // This widget is the root of your application.
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +19,100 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: TabPage(),
     );
+  }
+}
+
+class TabPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return TabPageState();
+  }
+}
+
+class TabPageState extends State<TabPage> {
+  int _selectIndex = 0;
+  List<Widget> pageList = [HomePage(), ContentPage(), PersonPage()];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("测试商城"),
+      ),
+      body: pageList[_selectIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: _getBotton(_selectIndex),
+        onTap: (flag) {
+          _onItemTabpped(flag);
+        },
+        currentIndex: _selectIndex,
+      ),
+    );
+  }
+
+  List<BottomNavigationBarItem> _getBotton(int index) {
+    List<BottomNavigationBarItem> list = List<BottomNavigationBarItem>();
+    list.add(BottomNavigationBarItem(
+        backgroundColor: Colors.white,
+        icon:_getImage(index,0),
+        // icon: Icon(Icons.print),
+        title: Text('首页')));
+    list.add(BottomNavigationBarItem(
+        backgroundColor: Colors.white,
+        icon:_getImage(index,1),
+        // icon: Icon(Icons.print),
+        title: Text('内容')));
+    list.add(BottomNavigationBarItem(
+        backgroundColor: Colors.white,
+        icon: _getImage(index,2),
+        // icon: Icon(Icons.print),
+        title: Text('个人')));
+    return list;
+  }
+
+  Image _getImage(int index,int type){
+    Image img;
+    switch(type){
+      case 0:
+        img= Image(
+          width: index == 0 ? 25 : 20,
+          height: index == 0 ? 25 : 20,
+          image: index == 0
+              ? AssetImage("assets/icons/one_sel.png")
+              : AssetImage("assets/icons/one.png"),
+        );
+        break;
+      case 1:
+        img= Image(
+          width: index == 1 ? 25 : 20,
+          height: index == 1 ? 25 : 20,
+          image: index == 1
+              ? AssetImage("assets/icons/tree_sel.png")
+              : AssetImage("assets/icons/tree.png"),
+        );
+        break;
+      case 2:
+        img=  Image(
+          width: index == 2 ? 25 : 20,
+          height: index == 2 ? 25 : 20,
+          image: index == 2
+              ? AssetImage("assets/icons/five_sel.png")
+              : AssetImage("assets/icons/five.png"),
+        );
+        break;
+    }
+    return img;
+
+  }
+
+
+  /// tab选中事件
+  void _onItemTabpped(int index) {
+    setState(() {
+      _selectIndex = index;
+    });
   }
 }
 
@@ -46,36 +141,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(

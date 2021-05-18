@@ -35,7 +35,7 @@ class TabPage extends StatefulWidget {
 
 class TabPageState extends State<TabPage> {
   int _selectIndex = 0;
-  List<Widget> pageList = [HomePage(), ContentPage(), PersonPage()];
+  List<Widget> pageList = [HomePage(),ContentPage(),PersonPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,10 @@ class TabPageState extends State<TabPage> {
       appBar: AppBar(
         title: Text("测试商城"),
       ),
-      body: pageList[_selectIndex],
+      body:  IndexedStack(
+        index: _selectIndex,
+        children: pageList,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: _getBotton(_selectIndex),
         onTap: (flag) {

@@ -6,16 +6,22 @@ import 'package:flutterdemo/bean/BannerBean.dart';
 import 'dart:convert' show json;
 
 import 'package:flutterdemo/bean/CategoryBean.dart';
+import 'package:flutterdemo/bean/SecKillBean.dart';
 class HomePage extends StatefulWidget {
   List<String> picList= new List();
 
   List<CategoryBean> catelogList= new List();
+  List<SecKillBean> killList= new List();
+
   @override
   State<StatefulWidget> createState() {
     var homePageState = HomePageState();
 
      var banners = Apifm.banners({'type':'app'});
      banners.then((res){
+       if (picList.length>0) {
+         picList.clear();
+       }
        // print("日志信息"+res.toString());
        List list = res['data'];
        for (var value in list) {
@@ -29,9 +35,12 @@ class HomePage extends StatefulWidget {
 
      var goodsCategory = Apifm.goodsCategory();
     goodsCategory.then((res){
+      if (catelogList.length>0) {
+        catelogList.clear();
+      }
       List list = res['data'];
       for (var value in list) {
-        print("日志信息222"+list.toString());
+
         var categoryBean = CategoryBean();
         categoryBean.url= value['icon'];
         categoryBean.title= value['name'];
@@ -41,6 +50,25 @@ class HomePage extends StatefulWidget {
       homePageState.setCatelog(catelogList);
     });
 
+    //限时秒杀
+    Apifm.goods().then((res){
+      List list = res['data'];
+      if (killList.length>0) {
+        killList.clear();
+      }
+      for (var value in list) {
+        var secKillBean = SecKillBean();
+        secKillBean.name=value['name'];
+        secKillBean.pic=value['pic'];
+        secKillBean.dateAdd=value['dateAdd'];
+        secKillBean.originalPrice=value['originalPrice'];
+        killList.add(secKillBean);
+      }
+      homePageState.setKillList(killList);
+
+
+    });
+
     return homePageState;
   }
 }
@@ -48,9 +76,8 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   List<String> _picList;
   List<CategoryBean> _catelogList;
+  List<SecKillBean> _killList;
   HomePageState();
-
-
   setData(List<String> list) {
     setState(() {
       this._picList=list;
@@ -62,10 +89,15 @@ class HomePageState extends State<HomePage> {
      _catelogList=catelogList;
    });
   }
+  void setKillList(List<SecKillBean> killList) {
+    setState(() {
+      _killList=killList;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    print("日志信息"+_picList.toString());
     return Scaffold(
       body:SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -132,38 +164,7 @@ class HomePageState extends State<HomePage> {
               Text("限时秒杀"),
               Expanded(child: Divider(height: 1,color:Colors.grey ,) ,),
             ],),
-            Row(children: <Widget>[
-              Container(child: Image.network("https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3437217665,1564280326&fm=26&gp=0.jpg"),width: 100,height: 100,),
-              SizedBox(width: 10,),
-
-              Expanded(child: Column(children: <Widget>[
-                Text("学生山东噶三等奖国学生山东噶三等奖国家建立山东噶三等奖国家建家建立山东噶三等奖国家建",maxLines: 3,overflow:TextOverflow.ellipsis),
-
-                Row(children: <Widget>[
-                  Text("开始时间: 2021-05-18 09:22:23",textAlign: TextAlign.right,style: TextStyle(color: Colors.red),),
-                ],),
-                Row(children: <Widget>[
-                  // Expanded(child: Row(children: <Widget>[
-                  //   Text("Y ",textAlign: TextAlign.start,style: TextStyle(color: Colors.red),),
-                  //   Container(child: Text("43",textAlign: TextAlign.start,style: TextStyle(color: Colors.red),),)
-                  // ],)),
-                  // RaisedButton(child: Text("立即抢购",),color: Colors.red,textColor: Colors.white, onPressed: () {},),
-                  // SizedBox(width: 10,)
-
-                  Text("Y ",textAlign: TextAlign.start,style: TextStyle(color: Colors.red),),
-                  Container(child: Text("43",textAlign: TextAlign.start,style: TextStyle(color: Colors.red),),),
-                  Expanded(child: Row(children: <Widget>[
-                    SizedBox()
-                  ],)),
-                  RaisedButton(child: Text("立即抢购",),color: Colors.red,textColor: Colors.white, onPressed: () {},),
-                  SizedBox(width: 10,)
-                ],)
-              ],))
-
-              // Column(children: <Widget>[
-              //
-              // ],)
-            ],),
+            Column(children:getKillWidget(_killList),),
             Row(children: <Widget>[
               Expanded(child: Divider(height: 1,color:Colors.grey ,) ,),
               Text("爆品推荐"),
@@ -184,7 +185,7 @@ class HomePageState extends State<HomePage> {
     if(catelogList==null){
       return list;
     }
-    print("日志信息444"+catelogList.toString());
+    // print("日志信息444"+catelogList.toString());
     var screnWidth = MediaQuery.of(context).size.width;
     var d = screnWidth-60;
     var devWidth = d/5;
@@ -197,6 +198,39 @@ class HomePageState extends State<HomePage> {
         Text(value.title)
       ],));
 
+    }
+    return list;
+  }
+
+  ///秒杀布局
+  List<Widget>  getKillWidget(List<SecKillBean> killList) {
+    // print("日志信息444"+killList.toString());
+    List<Widget> list = new List();
+    if(killList==null){
+      return list;
+    }
+
+    for (var value in killList) {
+      var row = Row(children: <Widget>[
+        Container(child: Image.network(value.pic),width: 100,height: 100,),
+        SizedBox(width: 10,),
+        Expanded(child: Column(children: <Widget>[
+          Text(value.name,maxLines: 3,overflow:TextOverflow.ellipsis),
+          Row(children: <Widget>[
+            Text(value.dateAdd,textAlign: TextAlign.right,style: TextStyle(color: Colors.red),),
+          ],),
+          Row(children: <Widget>[
+            Text("Y ",textAlign: TextAlign.start,style: TextStyle(color: Colors.red),),
+            Container(child: Text(value.originalPrice.toString(),textAlign: TextAlign.start,style: TextStyle(color: Colors.red),),),
+            Expanded(child: Row(children: <Widget>[
+              SizedBox()
+            ],)),
+            RaisedButton(child: Text("立即抢购",),color: Colors.red,textColor: Colors.white, onPressed: () {},),
+            SizedBox(width: 10,)
+          ],)
+        ],))
+      ],);
+      list.add(row);
     }
     return list;
   }
